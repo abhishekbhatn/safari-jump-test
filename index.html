@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Safari jump test</title>
+<style>
+:root { --bg:#F6F7F4; --fg:#1D2420; --muted:#5B655F; --card:#FFFFFF; --line:#DCE1DB; --ink:#232C27; --ok:#1F7D38; --warn:#A15C00; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --bg:#161B18; --fg:#EEF2EE; --muted:#A3ADA6; --card:#202722; --line:#33403A; --ink:#ACFFB6; --ok:#7BE38D; --warn:#F2B35B; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  padding-block: max(20px, env(safe-area-inset-top)) 32px; padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right)); }
+main { max-width: 480px; margin: 0 auto; display:flex; flex-direction:column; gap:18px; }
+h1 { margin:0; font-size:26px; line-height:1.2; text-wrap:balance; }
+p { margin:0; }
+.muted { color:var(--muted); font-size:14px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:10px; }
+.row { display:flex; justify-content:space-between; gap:12px; font-size:14px; }
+.row b { text-align:right; }
+.btn { display:flex; align-items:center; justify-content:center; height:52px; border-radius:10px; background:var(--ink); color:var(--bg); font-weight:600; text-decoration:none; font-size:16px; }
+.btn.alt { background:transparent; color:var(--fg); border:1px solid var(--line); }
+ol { margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; font-size:15px; }
+.ok { color:var(--ok); font-weight:600; } .warn { color:var(--warn); font-weight:600; }
+code { font-size:13px; word-break:break-all; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Does one tap open Safari from Instagram?</h1>
+  <p class="muted">A test for readywhen's Gmail connect on iPhone. Open this page inside Instagram or Facebook, then tap the first button.</p>
+
+  <section class="card" aria-label="Where you are">
+    <div class="row"><span>Browser</span><b id="where">Checking…</b></div>
+    <div class="row"><span>iPhone iOS version</span><b id="ios">Checking…</b></div>
+    <p id="verdict" class="muted"></p>
+  </section>
+
+  <a id="jump" class="btn" href="x-safari-https://readywhen.ai/?from=safari-jump-test">Open readywhen.ai in Safari</a>
+  <a id="chrome" class="btn alt" href="googlechromes://readywhen.ai/?from=chrome-jump-test">Or try Chrome (only if installed)</a>
+
+  <section class="card" aria-label="What to note">
+    <p><b>Note what happened after the first button:</b></p>
+    <ol>
+      <li>Safari opened readywhen.ai straight away</li>
+      <li>A pop-up asked "Open in Safari?" and you tapped Open</li>
+      <li>Nothing happened, or an error showed</li>
+    </ol>
+    <p class="muted">Then do the same inside the Facebook app. Two taps, two answers.</p>
+  </section>
+
+  <p class="muted">Link used: <code>x-safari-https://readywhen.ai</code> (needs iOS 17 or newer)</p>
+</main>
+<script>
+(function () {
+  var ua = navigator.userAgent || "";
+  var app = /Instagram/.test(ua) ? "Instagram's built-in browser"
+    : /FBAN|FBAV|FB_IAB/.test(ua) ? "Facebook's built-in browser"
+    : /LinkedInApp/.test(ua) ? "LinkedIn's built-in browser"
+    : /CriOS/.test(ua) ? "Chrome"
+    : /Safari/.test(ua) && /Version\//.test(ua) ? "Safari"
+    : "Another browser";
+  var m = ua.match(/OS (\d+)_(\d+)/);
+  var iosText = m ? m[1] + "." + m[2] : "Not an iPhone";
+  document.getElementById("where").textContent = app;
+  document.getElementById("ios").textContent = iosText;
+  var v = document.getElementById("verdict");
+  var inApp = /built-in/.test(app);
+  if (!m) { v.textContent = "Open this on an iPhone to run the test."; v.className = "warn"; }
+  else if (!inApp) { v.textContent = "You're not inside Instagram or Facebook yet. Send this link to yourself in an Instagram message and open it there."; v.className = "warn"; }
+  else if (parseInt(m[1], 10) < 17) { v.textContent = "This iPhone is older than iOS 17, so the Safari link is not expected to work."; v.className = "warn"; }
+  else { v.textContent = "Ready. Tap the first button."; v.className = "ok"; }
+})();
+</script>
+</body>
+</html>
